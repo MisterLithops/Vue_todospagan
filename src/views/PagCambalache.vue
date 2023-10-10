@@ -89,6 +89,10 @@
       }
    }
 
+   const verTransacciones=()=>{
+
+   }
+
    obtenerDatos(idGrupo)
 </script>
 
@@ -176,6 +180,14 @@
             class="py-2 px-6 text-white bg-green-600 hover:bg-green-700 mt-3 rounded-lg font-semibold text-lg shadow-md "  
             type="button">
             Guardar Cambios
+         </button>
+      </div>
+      <div class="mt-10 text-center">
+         <button
+            @click="verTransacciones"
+            class="py-2 px-8 text-white bg-yellow-600 hover:bg-yellow-700 mt-3 rounded-lg font-semibold text-lg shadow-md "  
+            type="button">
+            Pagos y Cobros
          </button>
       </div>
    </main> 
