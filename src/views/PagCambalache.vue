@@ -6,13 +6,16 @@
    import Spinete from "@/components/Spinete.vue";
    import useGrupos from '../composables/useGrupos'
    import Modal from '../components/Modal.vue';
+import { avisoAvisador } from '../utilidades/avisos';
 
    const almacenGrupos=useGrupos()
 
    const rutas=useRoute()
    const idGrupo=rutas.params.id
+
    const grupo=ref([]);
    const detalles=ref([]);
+   const transacciones=ref([])
    const idsBorrar=ref([]);
    const idParticipe=ref('');
    const verSpin=ref(false)
@@ -39,6 +42,7 @@
          participante.diferencia = cadaUno - participante.puesto;
       });
 
+
       return { suma, cadaUno };
    });
 
@@ -54,6 +58,7 @@
    }
 
    const guardarCambios=async()=>{
+      let mensaje=''
       const altaMovs=[]
       const actualizaMovs=[]
       grupo.value.participantes.forEach((participe)=>{
@@ -69,28 +74,94 @@
       if(altaMovs.length){
          try {
             await almacenGrupos.altaMovimientos(altaMovs)
+            mensaje='Altas bien '
          } catch (error) {
+            mensaje='Error en altas '
             console.log(error);
          }
       }
       if(actualizaMovs.length){
          try {
             await almacenGrupos.actualizaMovimientos(actualizaMovs)
+            mensaje+='Modificaciones bien '
          } catch (error) {
+            mensaje+='Error en modificaciones '
             console.log(error);
          }
       }
       if(idsBorrar.value.length){
          try {
-            await almacenGrupos.eliminaMovimientos(idsBorrar.value)   
+            await almacenGrupos.eliminaMovimientos(idsBorrar.value)
+            mensaje+='Eliminaciones bien'
          } catch (error) {
+            mensaje+='Error en eliminaciones'
             console.log(error);
          }
       }
+      avisoAvisador(mensaje)
    }
 
    const verTransacciones=()=>{
+      transacciones.value=[]
+      const cobran=[]
+      const pagan=[]
 
+      const {participantes}=grupo.value
+
+      participantes.forEach((p)=>{
+         if(p.diferencia<0){
+            cobran.push({
+               'nombre':p.nombre,
+               'cantidad':Math.abs(p.diferencia)
+            })
+         }else if(p.diferencia>0){
+            pagan.push({
+               'nombre':p.nombre,
+               'cantidad':Math.abs(p.diferencia)
+            })
+         }
+      }
+
+      )
+
+      cobran.sort((a,b)=>b.cantidad -a.cantidad)
+      pagan.sort((a,b)=>b.cantidad -a.cantidad)
+      let sigue=true
+
+         while (sigue) {
+            const pagador = pagan[0];
+            const cobrador=cobran[0]
+
+        
+            if(pagador.cantidad>cobrador.cantidad){
+               transacciones.value.push({
+                  "pagador":pagador.nombre,
+                  "cobrador":cobrador.nombre,
+                  "cantidad":cobrador.cantidad
+               }) 
+               cobran.splice(0,1)
+               pagan[0].cantidad-=cobrador.cantidad
+            }else if(pagador.cantidad===cobrador.cantidad){
+               transacciones.value.push({
+                  "pagador":pagador.nombre,
+                  "cobrador":cobrador.nombre,
+                  "cantidad":cobrador.cantidad
+               }) 
+               cobran.splice(0,1)
+               pagan.splice(0,1)
+            }else{
+               transacciones.value.push({
+                  "pagador":pagador.nombre,
+                  "cobrador":cobrador.nombre,
+                  "cantidad":pagador.cantidad
+               })
+               pagan.splice(0,1)
+               cobran[0].cantidad-=pagador.cantidad
+            }
+            if(cobran.length===0 || pagan.length===0){
+               sigue=false
+            }
+         }
    }
 
    obtenerDatos(idGrupo)
@@ -189,6 +260,9 @@
             type="button">
             Pagos y Cobros
          </button>
+      </div>
+      <div v-if="transacciones.length" >
+         <p v-for="trans in transacciones">{{ trans.pagador }} le debe {{formateoMoneda(trans.cantidad) }} a {{ trans.cobrador }}</p>
       </div>
    </main> 
    <Modal
