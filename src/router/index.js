@@ -7,7 +7,6 @@ const router = createRouter({
     {
       path: '/',
       name: 'inicio',
-      // component: ()=>import('../views/Pag404.vue')
       component: PagInicio
     },
     {
