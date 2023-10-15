@@ -7,6 +7,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'inicio',
+      // component: ()=>import('../views/Pag404.vue')
       component: PagInicio
     },
     {
@@ -23,6 +24,11 @@ const router = createRouter({
       path: '/cambalache/:id',
       name: 'cambalache',
       component: ()=>import('../views/PagCambalache.vue')
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'noPag',
+      component: ()=>import('../views/Pag404.vue')
     }
   ]
 })

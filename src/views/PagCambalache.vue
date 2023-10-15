@@ -1,6 +1,6 @@
 <script setup>
    import {ref,computed } from 'vue';
-   import {useRoute} from 'vue-router'
+   import {useRoute, useRouter} from 'vue-router'
    import Nombrecito from '../components/Nombrecito.vue'
    import {formateoMoneda} from '../utilidades/funciones'
    import { colores } from '../utilidades/constantes'
@@ -10,8 +10,9 @@
    import { avisoAvisador } from '../utilidades/avisos';
    import Swal from 'sweetalert2';
 
-   const almacenGrupos=useGrupos()
+   const almacenGrupos=useGrupos()  
 
+   const ruteador=useRouter()
    const rutas=useRoute()
    const idGrupo=rutas.params.id
 
@@ -21,12 +22,18 @@
    const idParticipe=ref('');
    const verSpin=ref(false)
    const verModal=ref(false)
+   
 
    const obtenerDatos=async(idBuscar)=>{
       verSpin.value=true
       const resp=await almacenGrupos.participantesPorGrupo(idBuscar)
-      grupo.value=resp
-      verSpin.value=false
+      if(resp){
+         grupo.value=resp
+         verSpin.value=false
+      }else{
+         ruteador.push({name:'inicio'})
+      }
+       
    }
 
    obtenerDatos(idGrupo)
