@@ -154,7 +154,7 @@
     </div>
 </template>
 
-<style>
+<style scoped>
     .fondo-modal{
         position: fixed;
         inset: 0;

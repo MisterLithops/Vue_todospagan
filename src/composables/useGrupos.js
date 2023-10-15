@@ -39,6 +39,8 @@ export default function useGrupos(){
         const {data}=await supabase
             .from('participantes')
             .insert(datos)
+            .select('*')
+        return data
     }
 
     const altaMovimientos=async(datos)=>{
@@ -59,6 +61,20 @@ export default function useGrupos(){
             .delete()
             .in('id',datos)
     }
+
+    const eliminaParticipe=async(id)=>{
+        const {data}=await supabase
+            .from('participantes')
+            .delete()
+            .eq('id',id)
+    }
+
+    const eliminaGrupo=async(id)=>{
+        const {data}=await supabase
+            .from('grupos')
+            .delete()
+            .eq('id',id)
+    }
     
     return{
         todosLosGrupos,
@@ -68,6 +84,8 @@ export default function useGrupos(){
         movimientosPorParticipa,
         altaMovimientos,
         actualizaMovimientos,
-        eliminaMovimientos
+        eliminaMovimientos,
+        eliminaParticipe,
+        eliminaGrupo
     }
 }

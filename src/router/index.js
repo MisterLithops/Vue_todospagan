@@ -23,12 +23,7 @@ const router = createRouter({
       path: '/cambalache/:id',
       name: 'cambalache',
       component: ()=>import('../views/PagCambalache.vue')
-    },
-    {
-      path: '/prueba',
-      name: 'prueba',
-      component: ()=>import('../views/Prueba.vue')
-    },
+    }
   ]
 })
 

@@ -9,9 +9,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.37.0",
-    "pinia": "^2.1.6",
-    "sweetalert2": "^11.7.31",
-    "uid": "^2.0.2",
+    "sweetalert2": "^11.7.32",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4"
   },
